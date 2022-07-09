@@ -1,4 +1,8 @@
-Generic extension to micromark, mdast and hast to add simple span extensions, e.g.:
+*** ALL CREDIT TO TITUS WORMER (<https://github.com/wooorm>) FOR ORIGINAL CODE ***
+
+Generalization of woorm's code in micromark-extension-gfm-strikethrough to allow easy addition of simple span elements Markdown ⇔ HTML by configuring extensions to micromark, mdast and hast.
+
+Example:
 <pre><code>
 import { mm_mdastFromMd, mdast_nodeInsertion, DecoratorConfig, mdast_nodeSerialization, mdastToHast as mdastToHastExt, hastToMdast as hastToMdastExt } from './decoration/index';
 import { fromMarkdown as parseMdastFromMarkdown } from 'mdast-util-from-markdown';
