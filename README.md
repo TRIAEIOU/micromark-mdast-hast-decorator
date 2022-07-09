@@ -62,4 +62,4 @@ const dest = serializeMdastToMarkdown(mdast, {
 console.log(`${src} ⇒ ${html} ⇒ ${dest}`);
 </code></pre>
 
-Generates `Some ^superscript^ and ~subscript~ text. ⇒ <p>Some <sup>superscript</sup> and <sub>subscript</sub> markdown.</p> ⇒ Some ^superscript^ and ~subscript~ text.`.
+Generates `Some ^superscript^ and ~subscript~ text. ⇒ <p>Some <sup>superscript</sup> and <sub>subscript</sub> text.</p> ⇒ Some ^superscript^ and ~subscript~ text.`.
