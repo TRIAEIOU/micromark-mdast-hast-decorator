@@ -1,0 +1,15 @@
+{
+	"restartable": "rs",
+	"ignore": [
+		"**/.git",
+		"**/Archive"
+	],
+	"verbose": false,
+	"execMap": {
+		"ts": "node -r ts-node/register/transpile-only"
+	},
+	"env": {
+		"TS_NODE_FILES": "true"
+	},
+	"ext": "ts"
+}

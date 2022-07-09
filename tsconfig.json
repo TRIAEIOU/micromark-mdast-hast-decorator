@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2018",
+    "module": "ES2022",
+    "outDir": "bin",
+    "rootDir": "src",
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "checkJs": true,
+    "allowJs": true,
+    "moduleResolution": "node",
+    "types": [
+      "node"
+    ],
+    "lib": [
+      "ES2022"
+    ],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowUnreachableCode": true,
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "<node_internals>/**",
+    "**/Archive/**/*"
+  ],
+  "ts-node": {
+    "esm": true
+  }
+}
