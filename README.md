@@ -28,7 +28,7 @@ const subscript: DecoratorConfig = {
     htmlTag: 'sub'
 };
 
-const src = 'Some ^superscript^ and ~subscript~ markdown.';
+const src = 'Some ^superscript^ and ~subscript~ text.';
 let mdast = parseMdastFromMarkdown(src, {
     extensions: [
         mm_mdastFromMd(superscript),
@@ -62,4 +62,4 @@ const dest = serializeMdastToMarkdown(mdast, {
 console.log(`${src} ⇒ ${html} ⇒ ${dest}`);
 </code></pre>
 
-Generates `Some ^superscript^ and ~subscript~ markdown. ⇒ <p>Some <sup>superscript</sup> and <sub>subscript</sub> markdown.</p> ⇒ Some ^superscript^ and ~subscript~ markdown.`.
+Generates `Some ^superscript^ and ~subscript~ text. ⇒ <p>Some <sup>superscript</sup> and <sub>subscript</sub> markdown.</p> ⇒ Some ^superscript^ and ~subscript~ text.`.
