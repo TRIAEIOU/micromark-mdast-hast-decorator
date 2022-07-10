@@ -1,24 +1,21 @@
 import type { Extension, State, TokenizeContext, Event, Effects, Code } from 'micromark-util-types';
-import type { DecoratorConfig } from './types';
+import type { _DecoratorConfig } from './types';
 import { splice } from 'micromark-util-chunked';
 import { classifyCharacter } from 'micromark-util-classify-character';
 import { resolveAll } from 'micromark-util-resolve-all';
 import { constants } from 'micromark-util-symbol/constants.js';
 import { types } from 'micromark-util-symbol/types.js';
 
-function fromMd(cfg: DecoratorConfig): Extension {
-  const sequence = `${cfg.type}Sequence`;
-  const tempSequence = `${cfg.type}TempSequence`;
-  const typeText = `${cfg.type}Text`;
-
+function fromMd(cfg: _DecoratorConfig): Extension {
+  const {mdSymbol, code, mdNode, htmlNode, sequence, tempSequence, typeText, symbolLen} = {...cfg};
   const tokenizer = {
     tokenize: tokenizeDecoration,
     resolveAll: resolveAllDecoration
   };
   return {
-    text: { [cfg.code]: tokenizer },
+    text: { [code]: tokenizer },
     insideDecoration: { null: [tokenizer] },
-    attentionMarkers: { null: [cfg.code] }
+    attentionMarkers: { null: [code] }
   };
 
   function resolveAllDecoration(events: Event[], context: TokenizeContext): Event[] {
@@ -49,7 +46,7 @@ function fromMd(cfg: DecoratorConfig): Extension {
             events[open][1].type = sequence;
 
             const decoration = {
-              type: cfg.type,
+              type: mdNode,
               start: Object.assign({}, events[open][1].start),
               end: Object.assign({}, events[index][1].end)
             };
@@ -118,37 +115,36 @@ function fromMd(cfg: DecoratorConfig): Extension {
     return start;
 
     /** @-type {State} */
-    function start(code: Code): State | void {
+    function start(cd: Code): State | void {
       if (
-        previous === cfg.code &&
+        previous === code &&
         events[events.length - 1][1].type !== types.characterEscape
       ) {
-        return nok(code);
+        return nok(cd);
       }
 
       effects.enter(tempSequence);
-      return more(code);
+      return more(cd);
     }
 
-    function more(code: Code): State | void {
+    function more(cd: Code): State | void {
       const before = classifyCharacter(previous);
-      const len = cfg.symbol.length;
 
-      if (code === cfg.code) {
-        if (size >= len) return nok(code);
-        effects.consume(code);
+      if (cd === code) {
+        if (size >= symbolLen) return nok(cd);
+        effects.consume(cd);
         size++;
         return more;
       }
 
-      if (size < len) return nok(code);
+      if (size < symbolLen) return nok(cd);
       const token = effects.exit(tempSequence);
-      const after = classifyCharacter(code);
+      const after = classifyCharacter(cd);
       token._open =
         !after || (after === constants.attentionSideAfter && Boolean(before));
       token._close =
         !before || (before === constants.attentionSideAfter && Boolean(after));
-      return ok(code);
+      return ok(cd);
     }
   }
 }

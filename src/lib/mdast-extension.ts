@@ -1,14 +1,8 @@
-import type { Parent, PhrasingContent } from 'mdast';
+import { Decoration, DecoratorConfig } from './types';
 import type { Extension, Handle as FromHandle } from 'mdast-util-from-markdown';
 import { Options, TrackFields, Context, Parent as nodeParent } from 'mdast-util-to-markdown/lib/types';
 import { containerPhrasing } from 'mdast-util-to-markdown/lib/util/container-phrasing.js';
 import { track } from 'mdast-util-to-markdown/lib/util/track.js';
-import { DecoratorConfig } from './types';
-
-interface Decoration extends Parent {
-    type: string;
-    children: PhrasingContent[];
-}
 
 interface Runtime {
     enter({ type: string, children: Array }, token: FromHandle): void;
@@ -23,34 +17,34 @@ declare module 'mdast' {
 
 function nodeInsertion(cfg: DecoratorConfig): Extension {
     const tmp = {
-        canContainEols: [cfg.type],
+        canContainEols: [cfg.mdNode],
         enter: {},
         exit: {}
     };
-    tmp.enter[cfg.type] = function (token: FromHandle) { (<Runtime>this).enter({ type: cfg.type, children: [] }, token); };
-    tmp.exit[cfg.type] = function (token: FromHandle) { (<Runtime>this).exit(token); };
+    tmp.enter[cfg.mdNode] = function (token: FromHandle) { (<Runtime>this).enter({ type: cfg.mdNode, children: [] }, token); };
+    tmp.exit[cfg.mdNode] = function (token: FromHandle) { (<Runtime>this).exit(token); };
     return tmp;
 }
 
 function nodeSerialization(cfg: DecoratorConfig): Options {
     const tmp = {
-        unsafe: [{ character: cfg.symbol[0], inConstruct: 'phrasing' }],
+        unsafe: [{ character: cfg.mdSymbol[0], inConstruct: 'phrasing' }],
         handlers: {}
     };
-    tmp.handlers[cfg.type] = function (node: Decoration, _: nodeParent, context: Context, safeOptions: TrackFields) {
+    tmp.handlers[cfg.mdNode] = function (node: Decoration, _: nodeParent, context: Context, safeOptions: TrackFields) {
         const tracker = track(safeOptions);
         const exit = context.enter('emphasis');
-        let value = tracker.move(cfg.symbol);
+        let value = tracker.move(cfg.mdSymbol);
         value += containerPhrasing(node, context, {
             ...tracker.current(),
             before: value,
-            after: cfg.symbol[0]
+            after: cfg.mdSymbol[0]
         });
-        value += tracker.move(cfg.symbol);
+        value += tracker.move(cfg.mdSymbol);
         exit();
         return value;
     };
-    tmp.handlers[cfg.type]['peek'] = function () { return cfg.symbol[0]; };
+    tmp.handlers[cfg.mdNode]['peek'] = function () { return cfg.mdSymbol[0]; };
     return tmp;
 }
 
